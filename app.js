@@ -2,6 +2,7 @@ const ProductList = React.createClass({
   getInitialState: function () {
     return {
       products: [],
+      sort_order: 'decreasing'
     };
   },
 
@@ -10,10 +11,27 @@ const ProductList = React.createClass({
   },
 
   updateState: function () {
+    console.log("Updating with sort order " + this.state.sort_order);
     const products = Data.sort((a, b) => {
-      return b.votes - a.votes;
+      if (this.state.sort_order === 'decreasing') {
+        return b.votes - a.votes;
+      } else {
+        return a.votes - b.votes;
+      }
     });
     this.setState({ products: products });
+  },
+
+  handleSortOrderDecreasing: function () {
+    this.setState({ sort_order: 'decreasing' });
+    console.log("Sort order set to decreasing");
+    this.updateState();
+  },
+
+  handleSortOrderIncreasing: function () {
+    this.setState({ sort_order: 'increasing' });
+    console.log("Sort order set to increasing");
+    this.updateState();
   },
 
   handleProductUpVote: function (productId) {
@@ -56,8 +74,19 @@ const ProductList = React.createClass({
       );
     });
     return (
-      <div className='ui items'>
-        {products}
+      <div className="main">
+        <div className="sort-controls">
+          Sort
+          <a onClick={this.handleSortOrderDecreasing}>
+            <i className='large caret up icon'></i>
+          </a>
+          <a onClick={this.handleSortOrderIncreasing}>
+            <i className='large caret down icon'></i>
+          </a>
+        </div>
+        <div className='ui items'>
+          {products}
+        </div>
       </div>
     );
   },
